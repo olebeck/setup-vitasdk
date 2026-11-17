@@ -23,12 +23,14 @@ runs:
         if [ -n "$VITASDK_CHANNEL" ]; then
           echo "Targeting channel: $VITASDK_CHANNEL"
         fi
-        curl -sSL "$URL" | sudo bash
-        sudo chown -R $USER:$USER /usr/local/vitasdk
+        sudo mkdir /usr/local/vitasdk
+        sudo chown $USER:$USER /usr/local/vitasdk
+        curl -sSL "$URL" | bash
         echo "VITASDK=/usr/local/vitasdk" >> "$GITHUB_ENV"
         echo "/usr/local/vitasdk/bin" >> "$GITHUB_PATH"
 
     - name: install packages
+      if: ${{ inputs.packages }}
       shell: bash
       env:
         PACKAGES: ${{ inputs.packages }}
