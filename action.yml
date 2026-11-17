@@ -18,9 +18,9 @@ runs:
       run: |
         export DEBIAN_FRONTEND=noninteractive
         sudo apt-get update
-        sudo apt-get install -y build-essential cmake pkg-config curl
+        sudo apt-get install -y cmake curl
 
-    - name: Download and run VitaSDK bootstrap script
+    - name: Download and run VitaSDK bootstrap script and install packages
       shell: bash
       env:
         VITASDK_CHANNEL: ${{ inputs.channel }}
@@ -33,9 +33,5 @@ runs:
         curl -sSL "$URL" | sudo bash
         echo "VITASDK=/usr/local/vitasdk" >> "$GITHUB_ENV"
         echo "/usr/local/vitasdk/bin" >> "$GITHUB_PATH"
-
-    - name: Install requested packages
-      shell: bash
-      run: |
         PACKAGES="${{ inputs.packages }}"
         sudo vdpm pacman -S $PACKAGES --noconfirm
