@@ -13,7 +13,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Download and run VitaSDK bootstrap script and install packages
+    - name: Download and run VitaSDK bootstrap script
       shell: bash
       env:
         VITASDK_CHANNEL: ${{ inputs.channel }}
@@ -24,9 +24,12 @@ runs:
           echo "Targeting channel: $VITASDK_CHANNEL"
         fi
         curl -sSL "$URL" | sudo bash
-        export VITASDK=/usr/local/vitasdk
-        export PATH="$PATH:/usr/local/vitasdk/bin"
         echo "VITASDK=/usr/local/vitasdk" >> "$GITHUB_ENV"
         echo "/usr/local/vitasdk/bin" >> "$GITHUB_PATH"
-        PACKAGES="${{ inputs.packages }}"
-        sudo ${VITASDK}/bin/vdpm pacman -S $PACKAGES --noconfirm
+
+    - name: install packages
+      shell: bash
+      env:
+        PACKAGES: ${{ inputs.packages }}
+      run: |
+        sudo vdpm pacman -S $PACKAGES --noconfirm
