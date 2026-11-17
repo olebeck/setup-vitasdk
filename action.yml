@@ -31,6 +31,8 @@ runs:
           echo "Targeting channel: $VITASDK_CHANNEL"
         fi
         curl -sSL "$URL" | sudo bash
+        export VITASDK=/usr/local/vitasdk
+        export PATH="$PATH:/usr/local/vitasdk/bin"
         echo "VITASDK=/usr/local/vitasdk" >> "$GITHUB_ENV"
         echo "/usr/local/vitasdk/bin" >> "$GITHUB_PATH"
         PACKAGES="${{ inputs.packages }}"
