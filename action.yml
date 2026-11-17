@@ -24,6 +24,7 @@ runs:
           echo "Targeting channel: $VITASDK_CHANNEL"
         fi
         curl -sSL "$URL" | sudo bash
+        sudo chown -R $USER:$USER /usr/local/vitasdk
         echo "VITASDK=/usr/local/vitasdk" >> "$GITHUB_ENV"
         echo "/usr/local/vitasdk/bin" >> "$GITHUB_PATH"
 
@@ -32,4 +33,4 @@ runs:
       env:
         PACKAGES: ${{ inputs.packages }}
       run: |
-        sudo vdpm pacman -S $PACKAGES --noconfirm
+        vdpm pacman -S $PACKAGES --noconfirm
