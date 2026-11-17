@@ -36,4 +36,4 @@ runs:
         echo "VITASDK=/usr/local/vitasdk" >> "$GITHUB_ENV"
         echo "/usr/local/vitasdk/bin" >> "$GITHUB_PATH"
         PACKAGES="${{ inputs.packages }}"
-        sudo vdpm pacman -S $PACKAGES --noconfirm
+        sudo ${VITASDK}/bin/vdpm pacman -S $PACKAGES --noconfirm
