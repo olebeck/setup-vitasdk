@@ -31,17 +31,11 @@ runs:
           echo "Targeting channel: $VITASDK_CHANNEL"
         fi
         curl -sSL "$URL" | sudo bash
-
-    - name: Set up environment paths
-      shell: bash
-      run: |
         echo "VITASDK=/usr/local/vitasdk" >> "$GITHUB_ENV"
         echo "/usr/local/vitasdk/bin" >> "$GITHUB_PATH"
 
     - name: Install requested packages
       shell: bash
       run: |
-        export VITASDK="/usr/local/vitasdk"
-        export PATH="$PATH:/usr/local/vitasdk/bin"
         PACKAGES="${{ inputs.packages }}"
-        vdpm pacman -S $PACKAGES --noconfirm
+        sudo vdpm pacman -S $PACKAGES --noconfirm
