@@ -1,0 +1,47 @@
+name: 'Install VitaSDK'
+description: 'Installs VitaSDK using the bootstrap script with an optional commit hash, sets paths, and installs packages.'
+inputs:
+  channel:
+    description: 'Release series to install (e.g., 2026.08, nightly, nightly-softfp)'
+    required: false
+    default: ''
+  packages:
+    description: 'Space-separated list of vdpm packages to install (e.g., taihen sdl2)'
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install system dependencies
+      shell: bash
+      run: |
+        export DEBIAN_FRONTEND=noninteractive
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake pkg-config curl
+
+    - name: Download and run VitaSDK bootstrap script
+      shell: bash
+      env:
+        VITASDK_CHANNEL: ${{ inputs.channel }}
+      run: |
+        URL="https://raw.githubusercontent.com/vitasdk/vdpm/e55fa5eee3ebb889d7fff8a800ecd48a9e92fa86/bootstrap-vitasdk.sh"
+        echo "Downloading bootstrap script from: $URL"
+        if [ -n "$VITASDK_CHANNEL" ]; then
+          echo "Targeting channel: $VITASDK_CHANNEL"
+        fi
+        curl -sSL "$URL" | sudo bash
+
+    - name: Set up environment paths
+      shell: bash
+      run: |
+        echo "VITASDK=/usr/local/vitasdk" >> "$GITHUB_ENV"
+        echo "/usr/local/vitasdk/bin" >> "$GITHUB_PATH"
+
+    - name: Install requested packages
+      shell: bash
+      run: |
+        export VITASDK="/usr/local/vitasdk"
+        export PATH="$PATH:/usr/local/vitasdk/bin"
+        PACKAGES="${{ inputs.packages }}"
+        vdpm pacman -S $PACKAGES --noconfirm
